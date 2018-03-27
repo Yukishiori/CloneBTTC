@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Bảo tàng thấu cảm</string>
+    <string name="quality_content">"Cách tạo một văn bản dài đến mức chúng ta có thể để nó sang trang khác mà chúng ta không cần phải tạo 1 ảnh nữa vì quá mệt nhưng thật ra có khi phải tạo thtaaj vì để viếtxong cái này chắc sẽ đến ngày mai"</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_profile_and_audio">ProfileAndAudioActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
