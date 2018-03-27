@@ -24,6 +24,7 @@
             android:label="china"
             android:parentActivityName=".ScanAndMapActivity">
         </activity>
+        <service android:name=".MediaPlayerService"/>
     </application>
 
 </manifest>

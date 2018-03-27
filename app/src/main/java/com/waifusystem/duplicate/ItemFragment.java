@@ -13,7 +13,7 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ItemFragment extends Fragment {
+public class ItemFragment extends Fragment implements View.OnClickListener {
 
     private int profileId;
     Profile profile ;
@@ -36,9 +36,9 @@ public class ItemFragment extends Fragment {
         View view = getView();
         if (view != null) {
             ImageView imageView = view.findViewById(R.id.imageView4);
-            imageView.setImageResource(profile.getItemPicId());
+            imageView.setImageResource(profile.getItemPicPath());
             TextView textView = view.findViewById(R.id.description);
-            textView.setText(profile.getItemDes());
+            textView.setText(profile.getItemDescription());
         }
     }
 
@@ -46,4 +46,10 @@ public class ItemFragment extends Fragment {
         this.profileId = id;
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view) {
+            case
+        }
+    }
 }

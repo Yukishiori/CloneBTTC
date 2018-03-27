@@ -7,22 +7,25 @@ package com.waifusystem.duplicate;
 public class Profile {
     private String name;
     private String description;
-    private String itemDes;
-    private int profilePicId;
-    private int itemPicId;
+    private String itemDescription;
+    private int profilePicPath;
+    private int itemPicPath;
+    private int audioPath;
 
     static Profile[] profiles = {
             new Profile("Ciel", "the best repliod around ~", "quá lười để viết des",
                     R.drawable.china,
-                    R.drawable.circle)
+                    R.drawable.circle,
+                    R.raw.test_audio)
     };
 
-    public Profile(String name, String description, String itemDes, int profilePicId, int itemPicId) {
+    public Profile(String name, String description, String itemDescription, int profilePicId, int itemPicPath, int audioPath) {
         this.name = name;
         this.description = description;
-        this.itemDes = itemDes;
-        this.profilePicId = profilePicId;
-        this.itemPicId = itemPicId;
+        this.itemDescription = itemDescription;
+        this.profilePicPath = profilePicId;
+        this.itemPicPath = itemPicPath;
+        this.audioPath = audioPath;
     }
 
     public String getName() {
@@ -33,15 +36,19 @@ public class Profile {
         return description;
     }
 
-    public String getItemDes() {
-        return itemDes;
+    public String getItemDescription() {
+        return itemDescription;
     }
 
-    public int getItemPicId() {
-        return itemPicId;
+    public int getItemPicPath() {
+        return itemPicPath;
     }
 
-    public int getProfilePicId() {
-        return profilePicId;
+    public int getProfilePicPath() {
+        return profilePicPath;
+    }
+
+    public int getAudioPath() {
+        return audioPath;
     }
 }

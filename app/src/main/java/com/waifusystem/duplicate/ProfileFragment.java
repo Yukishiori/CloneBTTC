@@ -49,7 +49,7 @@ public class ProfileFragment extends Fragment {
             profilePic = view.findViewById(R.id.person_pic);
             personName = view.findViewById(R.id.person_name);
             description = view.findViewById(R.id.description);
-            profilePic.setImageResource(profile.getProfilePicId());
+            profilePic.setImageResource(profile.getProfilePicPath());
             personName.setText(profile.getName());
             description.setText(profile.getDescription());
         }
