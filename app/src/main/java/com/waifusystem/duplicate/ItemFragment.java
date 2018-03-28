@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +14,6 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.truizlop.fabreveallayout.FABRevealLayout;
-import com.truizlop.fabreveallayout.OnRevealChangeListener;
 
 
 /**
@@ -88,7 +84,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
 
     @SuppressLint("DefaultLocale")
     private void updateSeekBar() {
-        if (mediaPlayer != null) {
+        if (mediaPlayer != null ) {
             secs = (mediaPlayer.getDuration() / 1000) % 60;
             mins = mediaPlayer.getDuration() / 1000 / 60;
 
@@ -139,17 +135,21 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
             switch (view.getId()) {
                 case R.id.play:
                     toggleButton();
+                    break;
                 case R.id.rewind:
+                    toastThis("but why");
                     ProfileAndAudioActivity.mediaPlayerService.rewindMedia();
+                    break;
                 case R.id.fast_forward:
                     ProfileAndAudioActivity.mediaPlayerService.fastForwardMedia();
-
+                    break;
                 default:
                     break;
             }
+        } else {
+            toastThis("P    lay time is over~");
         }
     }
-
 
     private void toggleButton() {
         if (mediaPlayer != null) {

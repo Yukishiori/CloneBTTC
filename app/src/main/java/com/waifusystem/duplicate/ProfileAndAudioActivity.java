@@ -1,31 +1,30 @@
 package com.waifusystem.duplicate;
 
-import android.app.FragmentContainer;
 import android.app.FragmentTransaction;
+import android.app.TaskStackBuilder;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class ProfileAndAudioActivity extends AppCompatActivity {
 
+
     ItemFragment itemFragment = new ItemFragment();
     ProfileFragment profileFragment = new ProfileFragment();
     public static String ID;
+    private int playAvailable = 0;
+
+    TaskStackBuilder taskStackBuilder;
 
 
     Intent playerIntent;
@@ -78,6 +77,9 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
 
 
         toProfileTransaction();
+        taskStackBuilder = TaskStackBuilder.create(this);
+        taskStackBuilder.addParentStack(ScanAndMapActivity.class);
+
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -92,11 +94,11 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
 
         profileFragment.setProfile(personId);
         itemFragment.setProfileId(personId);
-        profileChange(personId);
-
+        playAudio(personId);
     }
 
     private void toProfileTransaction() {
+
         android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.addToBackStack(null);
         ft.replace(R.id.fragment_container, profileFragment);
@@ -113,26 +115,26 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    private void profileChange(int personId) {
-        if (!serviceBound) {
-            playerIntent = new Intent(this, MediaPlayerService.class);
-            playerIntent.putExtra(ID, personId);
-            bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-            startService(playerIntent);
-        } else {
-            mediaPlayer = null;
-            Intent broadcastIntent = new Intent(Broadcast_NEW_PROFILE);
-            broadcastIntent.putExtra(ID, personId);
-            sendBroadcast(broadcastIntent);
+    private void playAudio(int personId) {
+        if (playAvailable > 0) {
+            if (!serviceBound) {
+                playerIntent = new Intent(this, MediaPlayerService.class);
+                playerIntent.putExtra(ID, personId);
+                bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+                startService(playerIntent);
+            } else {
+                mediaPlayer = null;
+                Intent broadcastIntent = new Intent(Broadcast_NEW_PROFILE);
+                broadcastIntent.putExtra(ID, personId);
+                sendBroadcast(broadcastIntent);
+            }
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        handler.removeCallbacks(runnable);
 
-        //todo remember to add this
         stopService(playerIntent);
     }
 

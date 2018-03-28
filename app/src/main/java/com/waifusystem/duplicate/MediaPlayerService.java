@@ -223,6 +223,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         if (mediaPlayer != null) {
             stopMedia();
             mediaPlayer.release();
+            mediaPlayer = null;
         }
         if (phoneStateListener != null) {
             telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
@@ -326,6 +327,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
                 profile.getItemPicPath()); //replace with your own image
 
+        //todo replace the value of the intent
         //make the intent to start the activity
         Intent intent = new Intent(this, ProfileAndAudioActivity.class);
         intent.putExtra(ProfileAndAudioActivity.ID, 0);
@@ -352,7 +354,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .addAction(R.drawable.ic_replay_5_white_24px, "rewind", playbackAction(3))
                 .addAction(play_pauseIcon, "pause", play_pauseAction)
-                .addAction(R.drawable.ic_forward_5_white_24px, "fast_forward", playbackAction(2));
+                .addAction(R.drawable.ic_forward_5_white_24px, "fast_forward", playbackAction(2))
+                .addAction(R.drawable.ic_clear_white_24px, "clear", playbackAction(4));
 
         ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notificationCompat.build());
     }
@@ -378,6 +381,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
             case 3:
                 playbackAction.setAction(ACTION_REW);
                 return PendingIntent.getService(this, actionNumber, playbackAction, 0);
+            case 4:
+                playbackAction.setAction(ACTION_STOP);
+                return PendingIntent.getService(this, actionNumber, playbackAction, 0);
             default:
                 break;
         }
@@ -398,25 +404,29 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         } else if (actionString.equalsIgnoreCase(ACTION_STOP)) {
             removeNotification();
             //Stop the service
+            mediaPlayer = null;
             stopSelf();
+
         }
     }
 
     public void fastForwardMedia() {
-        mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + 10000);
-        resumePosition += 10000;
+        mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + 5000);
+        resumePosition += 5000;
         if (!mediaPlayer.isPlaying()) {
             buildNotification(PlaybackStatus.PAUSED);
         }
     }
 
     public void rewindMedia() {
-        mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - 10000);
-        resumePosition -= 10000;
+        mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - 5000);
+        resumePosition -= 5000;
         if (!mediaPlayer.isPlaying()) {
             buildNotification(PlaybackStatus.PAUSED);
         }
     }
+
+
 
 
     public void toastThis(String what) {

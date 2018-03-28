@@ -20,10 +20,6 @@ public class ScanAndMapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scan_and_map);
 
 
-        //todo change pos
-        Intent intent1 = new Intent(this, ProfileAndAudioActivity.class);
-        intent1.putExtra(ProfileAndAudioActivity.ID, 0);
-        startActivity(intent1);
 
     }
 
@@ -50,7 +46,9 @@ public class ScanAndMapActivity extends AppCompatActivity {
         if (result != null) {
             String content = result.getContents();
             Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG).show();
-
+            Intent intent1 = new Intent(this, ProfileAndAudioActivity.class);
+            intent1.putExtra(ProfileAndAudioActivity.ID, 0);
+            startActivity(intent1);
         } else {
             Toast.makeText(this, "Scan failed ~", Toast.LENGTH_SHORT).show();
         }
