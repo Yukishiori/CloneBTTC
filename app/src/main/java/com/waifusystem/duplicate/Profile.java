@@ -32,7 +32,7 @@ public class Profile {
         return this.name;
     }
 
-    public String getDescription() {
+    public String getDescription()   {
         return description;
     }
 

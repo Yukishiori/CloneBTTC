@@ -48,7 +48,7 @@ public class ProfileFragment extends Fragment {
         if (view != null) {
             profilePic = view.findViewById(R.id.person_pic);
             personName = view.findViewById(R.id.person_name);
-            description = view.findViewById(R.id.description);
+            description = view.findViewById(R.id.profile_description);
             profilePic.setImageResource(profile.getProfilePicPath());
             personName.setText(profile.getName());
             description.setText(profile.getDescription());

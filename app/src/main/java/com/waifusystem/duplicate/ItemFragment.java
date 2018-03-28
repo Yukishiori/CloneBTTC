@@ -1,13 +1,23 @@
 package com.waifusystem.duplicate;
 
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.truizlop.fabreveallayout.FABRevealLayout;
+import com.truizlop.fabreveallayout.OnRevealChangeListener;
 
 
 /**
@@ -16,7 +26,18 @@ import android.widget.TextView;
 public class ItemFragment extends Fragment implements View.OnClickListener {
 
     private int profileId;
-    Profile profile ;
+    Profile profile;
+    public static MediaPlayer mediaPlayer;
+    ImageButton playButton;
+
+    Handler handler;
+    Runnable runnable;
+    SeekBar seekBar;
+    TextView timeNow;
+    TextView timeMax;
+    int mins;
+    int secs;
+
     public ItemFragment() {
         // Required empty public constructor
     }
@@ -26,7 +47,68 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_item, container, false);
+        View view = inflater.inflate(R.layout.fragment_item, container, false);
+
+        handler = new Handler();
+        timeMax = view.findViewById(R.id.time_max);
+        timeNow= view.findViewById(R.id.time_now);
+
+
+        playButton = view.findViewById(R.id.play);
+        ImageButton rewindButton = view.findViewById(R.id.rewind);
+        ImageButton fastForwardButton = view.findViewById(R.id.fast_forward);
+
+        fastForwardButton.setOnClickListener(this);
+        rewindButton.setOnClickListener(this);
+        playButton.setOnClickListener(this);
+
+        seekBar = view.findViewById(R.id.seek_bar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean input) {
+                if (input) {
+                    mediaPlayer.seekTo(progress);
+                    MediaPlayerService.resumePosition = progress;
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        return view;
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void updateSeekBar() {
+        if (mediaPlayer != null) {
+            secs = (mediaPlayer.getDuration() / 1000) % 60;
+            mins = mediaPlayer.getDuration() / 1000 / 60;
+
+            timeMax.setText(String.format(("%1$02d : %2$02d"), mins, secs));
+
+            seekBar.setMax(mediaPlayer.getDuration());
+
+            secs = (mediaPlayer.getCurrentPosition() / 1000) % 60;
+            mins = mediaPlayer.getCurrentPosition() / 1000 / 60;
+            timeNow.setText(String.format(("%1$02d : %2$02d"), mins, secs));
+            seekBar.setProgress(mediaPlayer.getCurrentPosition());
+            playButton.setImageResource(MediaPlayerService.play_pauseIcon);
+        }
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                updateSeekBar();
+            }
+        };
+        handler.postDelayed(runnable, 100);
     }
 
     @Override
@@ -39,6 +121,8 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
             imageView.setImageResource(profile.getItemPicPath());
             TextView textView = view.findViewById(R.id.description);
             textView.setText(profile.getItemDescription());
+//            playButton.setImageResource(MediaPlayerService.play_pauseIcon);
+            updateSeekBar();
         }
     }
 
@@ -46,10 +130,43 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
         this.profileId = id;
     }
 
+
     @Override
     public void onClick(View view) {
-        switch (view) {
-            case
+
+
+        if (mediaPlayer != null) {
+            switch (view.getId()) {
+                case R.id.play:
+                    toggleButton();
+                case R.id.rewind:
+                    ProfileAndAudioActivity.mediaPlayerService.rewindMedia();
+                case R.id.fast_forward:
+                    ProfileAndAudioActivity.mediaPlayerService.fastForwardMedia();
+
+                default:
+                    break;
+            }
         }
+    }
+
+
+    private void toggleButton() {
+        if (mediaPlayer != null) {
+
+            if (mediaPlayer.isPlaying()) {
+                ProfileAndAudioActivity.mediaPlayerService.pauseMedia();
+//                mediaPlayer.stop();
+//                playButton.setImageResource(R.drawable.ic_play_arrow_white_24px);
+            } else {
+                ProfileAndAudioActivity.mediaPlayerService.resumeMedia();
+//                playButton.setImageResource(R.drawable.ic_pause_white_24px);
+            }
+//            playButton.setImageResource(MediaPlayerService.play_pauseIcon);
+        }
+    }
+
+    public void toastThis(String content) {
+        Toast.makeText(getActivity().getApplicationContext(), content, Toast.LENGTH_SHORT).show();
     }
 }

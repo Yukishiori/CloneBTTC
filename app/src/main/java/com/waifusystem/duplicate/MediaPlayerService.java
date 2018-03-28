@@ -3,6 +3,7 @@ package com.waifusystem.duplicate;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
@@ -27,7 +29,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     public MediaPlayer mediaPlayer;
     private int profileId;
-    private int resumePosition;
+    public static int resumePosition;
     public AudioManager audioManager;
     IBinder localBinder = new LocalBinder();
 
@@ -44,6 +46,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     private static final int NOTIFICATION_ID = 101;
 
     private Profile profile;
+    public static int play_pauseIcon;
 
     private void initAudioPlayer() {
 
@@ -89,7 +92,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     public void resumeMedia() {
         if (!mediaPlayer.isPlaying()) {
-            mediaPlayer.seekTo(resumePosition );
+            mediaPlayer.seekTo(resumePosition);
             mediaPlayer.start();
             buildNotification(PlaybackStatus.PLAYING);
         }
@@ -147,7 +150,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
-//        MainActivity.mediaPlayer = this.mediaPlayer;
+        ItemFragment.mediaPlayer = this.mediaPlayer;
         playMedia();
     }
 
@@ -217,7 +220,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        toastThis("service destroyed");
         if (mediaPlayer != null) {
             stopMedia();
             mediaPlayer.release();
@@ -308,26 +310,35 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     private void buildNotification(PlaybackStatus playbackStatus) {
 
-        int playPauseIcon = android.R.drawable.ic_media_pause;//needs to be initialized
+        play_pauseIcon = android.R.drawable.ic_media_pause;//needs to be initialized
         PendingIntent play_pauseAction = null;
 
         //Build a new notification according to the current state of the MediaPlayer
         if (playbackStatus == PlaybackStatus.PLAYING) {
-            playPauseIcon = R.drawable.ic_pause_white_24px;
+            play_pauseIcon = R.drawable.ic_pause_white_24px;
             //create the pause action
             play_pauseAction = playbackAction(1);
         } else if (playbackStatus == PlaybackStatus.PAUSED) {
-            playPauseIcon = R.drawable.ic_play_arrow_white_24px;
+            play_pauseIcon = R.drawable.ic_play_arrow_white_24px;
             //create the play action
             play_pauseAction = playbackAction(0);
         }
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
                 profile.getItemPicPath()); //replace with your own image
 
-        //todo new notification
+        //make the intent to start the activity
+        Intent intent = new Intent(this, ProfileAndAudioActivity.class);
+        intent.putExtra(ProfileAndAudioActivity.ID, 0);
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+        taskStackBuilder.addParentStack(ScanAndMapActivity.class);
+        taskStackBuilder.addNextIntent(intent);
+        //create the pending intent
+        PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        android.support.v4.app.NotificationCompat.Builder notificationCompat = new android.support.v4.app.NotificationCompat.Builder(getApplicationContext(), "chinaId")
+        NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(getApplicationContext(), "chinaId")
                 .setShowWhen(false)
+                //this is the start activity stuff
+                .setContentIntent(pendingIntent)
                 .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(1, 2))
                 .setColor(getResources().getColor(R.color.colorPrimaryDark))
@@ -335,12 +346,12 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
                 .setOngoing(true)
                 //todo do sth with this wont chu
                 .setLargeIcon(largeIcon)
-                .setSmallIcon(playPauseIcon)
+                .setSmallIcon(play_pauseIcon)
                 .setContentText("\'s story")
                 .setContentTitle(profile.getName())
-                .setPriority(android.support.v4.app.NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .addAction(R.drawable.ic_replay_5_white_24px, "rewind", playbackAction(3))
-                .addAction(playPauseIcon, "pause", play_pauseAction)
+                .addAction(play_pauseIcon, "pause", play_pauseAction)
                 .addAction(R.drawable.ic_forward_5_white_24px, "fast_forward", playbackAction(2));
 
         ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notificationCompat.build());
@@ -392,18 +403,19 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     }
 
     public void fastForwardMedia() {
-            mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + 10000);
-            resumePosition += 10000;
+        mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + 10000);
+        resumePosition += 10000;
         if (!mediaPlayer.isPlaying()) {
             buildNotification(PlaybackStatus.PAUSED);
         }
+    }
+
+    public void rewindMedia() {
+        mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - 10000);
+        resumePosition -= 10000;
+        if (!mediaPlayer.isPlaying()) {
+            buildNotification(PlaybackStatus.PAUSED);
         }
-        public void rewindMedia() {
-            mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - 10000);
-            resumePosition -= 10000;
-            if (!mediaPlayer.isPlaying()) {
-                buildNotification(PlaybackStatus.PAUSED);
-            }
     }
 
 
