@@ -9,9 +9,12 @@
 
     tools:context="com.waifusystem.duplicate.ScanAndMapActivity">
 
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Hello China"/>
+
+
 
 </android.support.constraint.ConstraintLayout>

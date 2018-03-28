@@ -62,7 +62,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean input) {
-                if (input) {
+                if (input && mediaPlayer != null) {
                     mediaPlayer.seekTo(progress);
                     MediaPlayerService.resumePosition = progress;
                 }
@@ -130,7 +130,6 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
 
-
         if (mediaPlayer != null) {
             switch (view.getId()) {
                 case R.id.play:
@@ -147,7 +146,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
                     break;
             }
         } else {
-            toastThis("P    lay time is over~");
+            toastThis("Play time is over~");
         }
     }
 
@@ -156,13 +155,10 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
 
             if (mediaPlayer.isPlaying()) {
                 ProfileAndAudioActivity.mediaPlayerService.pauseMedia();
-//                mediaPlayer.stop();
-//                playButton.setImageResource(R.drawable.ic_play_arrow_white_24px);
             } else {
                 ProfileAndAudioActivity.mediaPlayerService.resumeMedia();
-//                playButton.setImageResource(R.drawable.ic_pause_white_24px);
+
             }
-//            playButton.setImageResource(MediaPlayerService.play_pauseIcon);
         }
     }
 

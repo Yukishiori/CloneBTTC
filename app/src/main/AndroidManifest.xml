@@ -21,7 +21,7 @@
         <activity
             android:name=".ProfileAndAudioActivity"
             android:screenOrientation="portrait"
-            android:label="china"
+            android:label="Profile"
             android:parentActivityName=".ScanAndMapActivity">
         </activity>
         <service android:name=".MediaPlayerService"/>
