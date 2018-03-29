@@ -26,6 +26,8 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
     public static MediaPlayer mediaPlayer;
     ImageButton playButton;
 
+    ImageView imageView;
+
     Handler handler;
     Runnable runnable;
     SeekBar seekBar;
@@ -83,7 +85,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
     }
 
     @SuppressLint("DefaultLocale")
-    private void updateSeekBar() {
+    private void updateSeekBarAndRotate() {
         if (mediaPlayer != null ) {
             secs = (mediaPlayer.getDuration() / 1000) % 60;
             mins = mediaPlayer.getDuration() / 1000 / 60;
@@ -97,14 +99,17 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
             timeNow.setText(String.format(("%1$02d : %2$02d"), mins, secs));
             seekBar.setProgress(mediaPlayer.getCurrentPosition());
             playButton.setImageResource(MediaPlayerService.play_pauseIcon);
+            if (mediaPlayer.isPlaying()) {
+                imageView.setRotation(imageView.getRotation() + 1);
+            }
         }
         runnable = new Runnable() {
             @Override
             public void run() {
-                updateSeekBar();
+                updateSeekBarAndRotate();
             }
         };
-        handler.postDelayed(runnable, 100);
+        handler.postDelayed(runnable, 10);
     }
 
     @Override
@@ -113,12 +118,12 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
         super.onStart();
         View view = getView();
         if (view != null) {
-            ImageView imageView = view.findViewById(R.id.imageView4);
+            imageView = view.findViewById(R.id.imageView4);
             imageView.setImageResource(profile.getItemPicPath());
             TextView textView = view.findViewById(R.id.description);
             textView.setText(profile.getItemDescription());
 //            playButton.setImageResource(MediaPlayerService.play_pauseIcon);
-            updateSeekBar();
+            updateSeekBarAndRotate();
         }
     }
 
@@ -165,4 +170,6 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
     public void toastThis(String content) {
         Toast.makeText(getActivity().getApplicationContext(), content, Toast.LENGTH_SHORT).show();
     }
+
+
 }

@@ -22,7 +22,7 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
     ItemFragment itemFragment = new ItemFragment();
     ProfileFragment profileFragment = new ProfileFragment();
     public static String ID;
-    private int playAvailable = 0;
+    private int playAvailable = 1;
 
     TaskStackBuilder taskStackBuilder;
 
@@ -140,4 +140,9 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Toast.makeText(getApplicationContext(), "You don't", Toast.LENGTH_SHORT).show();
+    }
 }
