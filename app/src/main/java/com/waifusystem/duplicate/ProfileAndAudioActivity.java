@@ -50,38 +50,20 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
         }
     };
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    toProfileTransaction();
-                    return true;
-                case R.id.navigation_dashboard:
-                    toItemTransaction();
-                    return true;
-            }
-            return false;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_and_audio);
 
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
 
 
         toProfileTransaction();
         taskStackBuilder = TaskStackBuilder.create(this);
         taskStackBuilder.addParentStack(ScanAndMapActivity.class);
 
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
 
 
         int personId = -1;

@@ -1,8 +1,10 @@
 package com.waifusystem.duplicate;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.widget.TextView;
@@ -15,10 +17,17 @@ public class ScanAndMapActivity extends AppCompatActivity {
 
     private TextView textTest;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_scan_and_map);
+        Intent intent1 = new Intent(this, ProfileAndAudioActivity.class);
+        intent1.putExtra(ProfileAndAudioActivity.ID, 0);
+        startActivity(intent1);
     }
 
     @Override
@@ -49,9 +58,7 @@ public class ScanAndMapActivity extends AppCompatActivity {
         if (result != null) {
             String content = result.getContents();
             Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG).show();
-            Intent intent1 = new Intent(this, ProfileAndAudioActivity.class);
-            intent1.putExtra(ProfileAndAudioActivity.ID, 0);
-            startActivity(intent1);
+
         } else {
             Toast.makeText(this, "Scan failed ~", Toast.LENGTH_SHORT).show();
         }

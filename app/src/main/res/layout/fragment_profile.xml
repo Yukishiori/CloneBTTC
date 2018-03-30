@@ -9,40 +9,87 @@
     tools:context="com.waifusystem.duplicate.ProfileFragment">
 
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:drawable/editbox_dropdown_dark_frame"
+        android:scaleType="centerCrop"
+        android:src="@drawable/jpeggb"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <android.support.constraint.Guideline
-        android:id="@+id/guideline7"
+        android:id="@+id/hori1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vert1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.1" />
 
     <android.support.constraint.Guideline
-        android:id="@+id/guideline8"
-        android:layout_width="0dp"
+        android:id="@+id/vert2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.9" />
 
     <android.support.constraint.Guideline
-        android:id="@+id/guideline9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.55" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.06" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline11"
+        android:id="@+id/hori2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.6" />
+
+    <TextView
+        android:id="@+id/person_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/icgmb"
+        android:text="Cloud Nine"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/hori3"
+        app:layout_constraintEnd_toStartOf="@+id/vert2"
+        app:layout_constraintStart_toStartOf="@+id/vert1"
+        app:layout_constraintTop_toTopOf="@+id/hori2" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/hori3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
+    <TextView
+        android:id="@+id/profile_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/icgm"
+        android:text="the discription"
+        android:textAlignment="viewStart"
+        android:textColor="@color/white"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/vert2"
+        app:layout_constraintStart_toStartOf="@+id/vert1"
+        app:layout_constraintTop_toTopOf="@+id/hori3" />
 
     <ImageView
         android:id="@+id/person_pic"
@@ -52,49 +99,32 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
         android:src="@drawable/china"
-        app:layout_constraintBottom_toTopOf="@+id/guideline9"
-        app:layout_constraintEnd_toStartOf="@+id/guideline8"
+        app:layout_constraintBottom_toTopOf="@+id/hori2"
+        app:layout_constraintEnd_toStartOf="@+id/vert2"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline7"
-        app:layout_constraintTop_toTopOf="@+id/guideline10"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="@+id/vert1"
+        app:layout_constraintTop_toTopOf="@+id/hori1"
+        app:layout_constraintVertical_bias="1.0" />
 
-
-    <TextView
-        android:id="@+id/person_name"
+    <ImageButton
+        android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:fontFamily="@font/icgmb"
-        android:text="Beats on fire"
-        android:textAlignment="center"
-        android:textColor="@color/colorAccent"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/guideline11"
-        app:layout_constraintEnd_toStartOf="@+id/guideline8"
-        app:layout_constraintStart_toStartOf="@+id/guideline7"
-        app:layout_constraintTop_toTopOf="@+id/guideline9" />
-
-
-    <TextView
-        android:id="@+id/profile_description"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="china is my chity"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/person_name" />
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/person_pic"
+        app:layout_constraintEnd_toStartOf="@+id/vert2"
+        app:layout_constraintStart_toStartOf="@+id/person_pic"
+        app:layout_constraintTop_toTopOf="@+id/person_pic"
+        app:srcCompat="@drawable/ic_play_arrow_white_48px" />
+
+
 </android.support.constraint.ConstraintLayout>
 
     <!--</ScrollView>-->
