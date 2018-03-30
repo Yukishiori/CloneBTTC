@@ -19,7 +19,7 @@ import android.widget.Toast;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ItemFragment extends Fragment implements View.OnClickListener {
+public class ItemFragment extends android.support.v4.app.Fragment implements View.OnClickListener {
 
     private int profileId;
     Profile profile;
@@ -85,7 +85,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
     }
 
     @SuppressLint("DefaultLocale")
-    private void updateSeekBarAndRotate() {
+    private void updateSeekbar() {
         if (mediaPlayer != null ) {
             secs = (mediaPlayer.getDuration() / 1000) % 60;
             mins = mediaPlayer.getDuration() / 1000 / 60;
@@ -99,17 +99,15 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
             timeNow.setText(String.format(("%1$02d : %2$02d"), mins, secs));
             seekBar.setProgress(mediaPlayer.getCurrentPosition());
             playButton.setImageResource(MediaPlayerService.play_pauseIcon);
-            if (mediaPlayer.isPlaying()) {
-                imageView.setRotation(imageView.getRotation() + 1);
-            }
+
         }
         runnable = new Runnable() {
             @Override
             public void run() {
-                updateSeekBarAndRotate();
+                updateSeekbar();
             }
         };
-        handler.postDelayed(runnable, 10);
+        handler.postDelayed(runnable, 100);
     }
 
     @Override
@@ -120,10 +118,10 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
         if (view != null) {
             imageView = view.findViewById(R.id.imageView4);
             imageView.setImageResource(profile.getItemPicPath());
-            TextView textView = view.findViewById(R.id.description);
-            textView.setText(profile.getItemDescription());
+//            TextView textView = view.findViewById(R.id.description);
+//            textView.setText(profile.getItemDescription());
 //            playButton.setImageResource(MediaPlayerService.play_pauseIcon);
-            updateSeekBarAndRotate();
+            updateSeekbar();
         }
     }
 
@@ -141,7 +139,6 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
                     toggleButton();
                     break;
                 case R.id.rewind:
-                    toastThis("but why");
                     ProfileAndAudioActivity.mediaPlayerService.rewindMedia();
                     break;
                 case R.id.fast_forward:
@@ -157,7 +154,6 @@ public class ItemFragment extends Fragment implements View.OnClickListener {
 
     private void toggleButton() {
         if (mediaPlayer != null) {
-
             if (mediaPlayer.isPlaying()) {
                 ProfileAndAudioActivity.mediaPlayerService.pauseMedia();
             } else {

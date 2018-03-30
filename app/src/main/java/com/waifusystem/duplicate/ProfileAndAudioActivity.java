@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,11 +22,14 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
 
     ItemFragment itemFragment = new ItemFragment();
     ProfileFragment profileFragment = new ProfileFragment();
+
     public static String ID;
     private int playAvailable = 1;
 
     TaskStackBuilder taskStackBuilder;
+    SlideAdapter slideAdapter;
 
+    ViewPager viewPager;
 
     Intent playerIntent;
 
@@ -33,8 +37,6 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
 
     static MediaPlayerService  mediaPlayerService;
     boolean serviceBound = false;
-
-    public static MediaPlayer mediaPlayer;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -57,14 +59,9 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_and_audio);
 
-
-
-        toProfileTransaction();
+//        toItemTransaction();
         taskStackBuilder = TaskStackBuilder.create(this);
         taskStackBuilder.addParentStack(ScanAndMapActivity.class);
-
-
-
 
         int personId = -1;
         try {
@@ -76,25 +73,10 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
 
         profileFragment.setProfile(personId);
         itemFragment.setProfileId(personId);
+        slideAdapter = new SlideAdapter(getSupportFragmentManager(), profileFragment, itemFragment);
+        viewPager = findViewById(R.id.fragment_container);
+        viewPager.setAdapter(slideAdapter);
         playAudio(personId);
-    }
-
-    private void toProfileTransaction() {
-
-        android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.addToBackStack(null);
-        ft.replace(R.id.fragment_container, profileFragment);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.commit();
-
-    }
-
-    private void toItemTransaction() {
-        android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.addToBackStack(null);
-        ft.replace(R.id.fragment_container, itemFragment);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.commit();
     }
 
     private void playAudio(int personId) {
@@ -105,7 +87,7 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
                 bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
                 startService(playerIntent);
             } else {
-                mediaPlayer = null;
+                ItemFragment.mediaPlayer = null;
                 Intent broadcastIntent = new Intent(Broadcast_NEW_PROFILE);
                 broadcastIntent.putExtra(ID, personId);
                 sendBroadcast(broadcastIntent);
@@ -122,9 +104,4 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Toast.makeText(getApplicationContext(), "You don't", Toast.LENGTH_SHORT).show();
-    }
 }

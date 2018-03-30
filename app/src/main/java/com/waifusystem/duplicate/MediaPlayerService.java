@@ -18,6 +18,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.view.View;
 import android.widget.Toast;
 
 /**
@@ -48,6 +49,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     private Profile profile;
     public static int play_pauseIcon;
 
+
+
     private void initAudioPlayer() {
 
         mediaPlayer = MediaPlayer.create(this, profile.getAudioPath());
@@ -65,7 +68,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         callStateListener();
         registerBecomingNoisyReceiver();
         register_playNewAudio();
+
+
     }
+
 
     public void playMedia() {
         if (!mediaPlayer.isPlaying()) {
@@ -84,6 +90,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     public void pauseMedia() {
         if (mediaPlayer.isPlaying()) {
+            ProfileFragment.playButton.setActivated(true);
+            ProfileFragment.playButton.setVisibility(View.VISIBLE);
             mediaPlayer.pause();
             resumePosition = mediaPlayer.getCurrentPosition();
             buildNotification(PlaybackStatus.PAUSED);
@@ -151,7 +159,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         ItemFragment.mediaPlayer = this.mediaPlayer;
+        //todo set it up if has problem
+
         playMedia();
+        pauseMedia();
     }
 
 
@@ -175,7 +186,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
             case AudioManager.AUDIOFOCUS_GAIN:
                 // resume playback
                 if (mediaPlayer == null) initAudioPlayer();
-                else if (!mediaPlayer.isPlaying()) playMedia();
+                else if (!mediaPlayer.isPlaying()) resumeMedia();
                 mediaPlayer.setVolume(1.0f, 1.0f);
                 break;
             case AudioManager.AUDIOFOCUS_LOSS:
@@ -222,6 +233,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         super.onDestroy();
         if (mediaPlayer != null) {
             stopMedia();
+            ItemFragment.mediaPlayer = null;
             mediaPlayer.release();
             mediaPlayer = null;
         }
@@ -311,7 +323,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     private void buildNotification(PlaybackStatus playbackStatus) {
 
-        play_pauseIcon = android.R.drawable.ic_media_pause;//needs to be initialized
+        play_pauseIcon = android.R.drawable.ic_media_play;//needs to be initialized
         PendingIntent play_pauseAction = null;
 
         //Build a new notification according to the current state of the MediaPlayer
@@ -404,8 +416,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         } else if (actionString.equalsIgnoreCase(ACTION_STOP)) {
             removeNotification();
             //Stop the service
-            mediaPlayer = null;
-            stopSelf();
+//            mediaPlayer.release();
+//            mediaPlayer = null;
+//            stopSelf();
 
         }
     }
