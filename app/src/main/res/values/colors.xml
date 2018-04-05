@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#a74647</color>
-    <color name="colorPrimaryDark">#731620</color>
-    <color name="colorAccent">#e0e0e0</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#a74647</color>
+
+    <color name="darkerPrim">#5b2021</color>
 
     <color name="gray">#D8D8D8</color>
+    <color name="black">#6f6f</color>
 
     <color name="white">#ffffff</color>
+    <color name="transparent_white">#d7d7d7</color>
+    <color name="fade_black">#2e2e2e</color>
+    <color name="reddit">#c23f3f</color>
 </resources>

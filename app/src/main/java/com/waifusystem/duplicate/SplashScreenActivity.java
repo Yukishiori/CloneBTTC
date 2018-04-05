@@ -1,13 +1,10 @@
 package com.waifusystem.duplicate;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -37,7 +34,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             editor.apply();
         }
 
-        Intent intent = new Intent(this, ScanAndMapActivity.class);
+        Intent intent = new Intent(this, QuestActivity.class);
         startActivity(intent);
         finish();
     }

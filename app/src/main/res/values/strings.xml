@@ -10,5 +10,6 @@
     <string name="title_camera">Scanner</string>
     <string name="title_now_playing">Now playing</string>
 
+    <string name="scan_failed">It\'s not the one we\'re looking for</string>
 
 </resources>

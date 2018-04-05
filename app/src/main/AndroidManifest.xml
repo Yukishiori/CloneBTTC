@@ -10,13 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ScanAndMapActivity"
+            android:name=".QuestActivity"
             android:configChanges="orientation|keyboardHidden">
         </activity>
         <activity
             android:name=".ProfileAndAudioActivity"
             android:label="Profile"
-            android:parentActivityName=".ScanAndMapActivity"
+            android:parentActivityName=".QuestActivity"
             android:screenOrientation="portrait">
 
         </activity>
