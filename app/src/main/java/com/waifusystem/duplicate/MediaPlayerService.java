@@ -329,7 +329,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         option.inSampleSize = 16;
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), profile.getProfileImagePath(), option); //replace with your own image
 
-        //todo replace the value of the intent
         //make the intent to start the activity
         Intent intent = new Intent(this, ProfileAndAudioActivity.class);
         intent.putExtra(ProfileAndAudioActivity.ID, profileId);
@@ -347,7 +346,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
                 .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(1, 2))
                 .setColor(getResources().getColor(R.color.colorPrimaryDark))
-                //todo do sth with this wont chu
                 .setLargeIcon(largeIcon)
                 .setSmallIcon(play_pauseIcon)
                 .setContentText("\'s story")

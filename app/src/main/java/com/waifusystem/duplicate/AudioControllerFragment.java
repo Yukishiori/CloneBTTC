@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -149,6 +152,7 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
 
     private void toggleButton() {
         if (MediaPlayerService.mediaPlayer.isPlaying()) {
+            
 
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //                playButton.setImageResource(R.drawable.play_to_pause);
@@ -156,6 +160,7 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
 //                pauseToPlayAnimation.start();
 //            } else {
                 playButton.setImageResource(R.drawable.ic_play_arrow_white_48px);
+
 //            }
             ProfileAndAudioActivity.mediaPlayerService.pauseMedia();
 //                pauseClicked = true;

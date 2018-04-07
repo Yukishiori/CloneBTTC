@@ -7,13 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import java.util.Random;
+
 public class SplashScreenActivity extends AppCompatActivity {
     public static final String PREFS_NAME = "MyPref";
 
-    //todo delet this
-
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
+
+
+
+
 
 
     @SuppressLint("CommitPrefEdits")
@@ -31,6 +35,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "what's up guys it's moe here", Toast.LENGTH_SHORT).show();
             editor = getSharedPreferences(PREFS_NAME, 0).edit();
             editor.putBoolean("first", false);
+
             editor.apply();
         }
 
@@ -38,4 +43,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+
 }

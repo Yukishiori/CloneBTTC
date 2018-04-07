@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners
-        android:radius="30dp"
-        />
+    <solid android:color="@android:color/transparent" />
+    <corners android:radius="30dp" />
+    <stroke
+        android:color="@color/white"
+        android:dashGap="50dp" />
 
-    <solid
-        android:color="@color/colorPrimary" />
 
-    <!--<gradient android:startColor="@color/colorPrimary"-->
-        <!--android:endColor="@color/gray" />-->
 </shape>
