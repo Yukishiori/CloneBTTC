@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -64,7 +66,10 @@ public class QuestActivity extends AppCompatActivity {
                     this.id = id;
 
                     Log.d("tag", "setupSQL: " + id + " is " + cursor.getInt(2));
+                    Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in_anim);
+
                     imageView.setImageResource(Profile.profiles[id].getItemImagePath());
+                    imageView.startAnimation(animation);
                 } else {
                     Log.d("", "setupSQL: hehe xd");
                 }
