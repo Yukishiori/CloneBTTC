@@ -1,5 +1,6 @@
 package com.waifusystem.duplicate;
 
+import android.app.TaskStackBuilder;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,7 +16,9 @@ import android.view.Menu;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -23,8 +26,8 @@ import com.google.zxing.integration.android.IntentResult;
 
 public class QuestActivity extends AppCompatActivity {
 
-    ConstraintLayout constraintLayout;
-    AnimationDrawable animationDrawable;
+    Button nextPersonButton;
+    TextView orText;
 
     DatabaseHelper databaseHelper;
     SQLiteDatabase db;
@@ -35,20 +38,20 @@ public class QuestActivity extends AppCompatActivity {
     String TAG = "setupSQL";
     private int id;
 
+    ImageAndDescriptionFragment imageAndDescriptionFragment = new ImageAndDescriptionFragment();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quest);
 
-        constraintLayout = findViewById(R.id.quest_layout);
+        nextPersonButton = findViewById(R.id.next_character);
+        orText = findViewById(R.id.or);
+
         imageView = findViewById(R.id.quest_image);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-//        animationDrawable = (AnimationDrawable) constraintLayout.getBackground();
-//        animationDrawable.setEnterFadeDuration(6000);
-//        animationDrawable.setExitFadeDuration(6000);
-//        animationDrawable.start();
     }
 
     private void setupSQL() {
@@ -56,36 +59,55 @@ public class QuestActivity extends AppCompatActivity {
             databaseHelper = new DatabaseHelper(this);
             db = databaseHelper.getReadableDatabase();
             cursor = db.query("PERSON",
-                    new String[]{"_id", "POSITION", "CHECKED"},
+                    new String[]{"_id", "POSITION", "NOWCHECKING", "CHECKED"},
                     "CHECKED = 0",
                     null, null, null, "POSITION ASC");
 
             if (cursor.getCount() != 0) {
                 if (cursor.moveToFirst()) {
-                    int id = cursor.getInt(0) - 1;
-                    this.id = id;
+                    this.id = cursor.getInt(0) - 1;
 
-                    Log.d("tag", "setupSQL: " + id + " is " + cursor.getInt(2));
-                    Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in_anim);
+                    if (cursor.getInt(2) == 1) {
+                        setupHiddenButton();
+                    }
 
-                    imageView.setImageResource(Profile.profiles[id].getItemImagePath());
-                    imageView.startAnimation(animation);
-                } else {
-                    Log.d("", "setupSQL: hehe xd");
+
                 }
             } else {
                 Toast.makeText(getApplicationContext(), "it's over anakin", Toast.LENGTH_SHORT).show();
             }
 
         } catch (SQLException e) {
-            Toast.makeText(getApplicationContext(), "Uh oh something's wrong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Uhhh something's wrong", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void setupHiddenButton() {
+        nextPersonButton.setVisibility(View.VISIBLE);
+        nextPersonButton.setActivated(true);
+        nextPersonButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("CHECKED", 1);
+                db.update("PERSON", contentValues, "_id = ?", new String[]{Integer.toString(id + 1)});
+                Intent intent = new Intent(QuestActivity.this, QuestActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        });
+        orText.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         setupSQL();
+
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in_anim);
+
+        imageView.setImageResource(Profile.profiles[id].getItemImagePath());
+        imageView.startAnimation(animation);
     }
 
     @Override
@@ -110,7 +132,7 @@ public class QuestActivity extends AppCompatActivity {
             if (Integer.parseInt(result.getContents()) == id) {
                 //checked
                 ContentValues personValue = new ContentValues();
-                personValue.put("CHECKED", 1);
+                personValue.put("NOWCHECKING", 1);
                 db.update("PERSON", personValue, "_id = ?", new String[]{Integer.toString(id + 1)});
 
                 //todo send the id
@@ -136,4 +158,15 @@ public class QuestActivity extends AppCompatActivity {
         db.close();
         cursor.close();
     }
+
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        Intent intent = new Intent(Intent.ACTION_MAIN);
+//        intent.addCategory(Intent.CATEGORY_HOME);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
+//        finish();
+//        System.exit(0);
+//    }
 }

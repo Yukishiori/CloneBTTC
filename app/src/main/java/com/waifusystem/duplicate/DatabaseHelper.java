@@ -29,10 +29,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL("CREATE TABLE PERSON (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "POSITION INTEGER, "
+                + "NOWCHECKING INTEGER, "
                 + "CHECKED INTEGER);"); //1 is done 0 isn't
         for (int i = 0; i <Profile.profiles.length; i++) {
             ContentValues personValue = new ContentValues();
             personValue.put("POSITION", order[i]);
+            personValue.put("NOWCHECKING", 0);
             personValue.put("CHECKED", 0);
             sqLiteDatabase.insert("PERSON", null, personValue);
         }

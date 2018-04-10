@@ -10,6 +10,7 @@ import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
@@ -36,10 +37,6 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
     int mins;
     int secs;
 
-//    public boolean pauseClicked = true;
-
-    private AnimatedVectorDrawable playToPauseAnimation;
-    private AnimatedVectorDrawable pauseToPlayAnimation;
 
     public AudioControllerFragment() {
         // Required empty public constructor
@@ -84,7 +81,7 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
 
             }
         });
-
+        updateSeekbar();
         return view;
     }
 
@@ -105,7 +102,7 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
                         playButton.setImageResource(R.drawable.ic_play_arrow_white_48px);
                     }
                 }
-                handler.postDelayed(this, 100);
+                handler.postDelayed(this, 10);
             }
         });
     }
@@ -114,7 +111,7 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
     public void onStart() {
         super.onStart();
 
-        updateSeekbar();
+
     }
 
 

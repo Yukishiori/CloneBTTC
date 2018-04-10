@@ -295,11 +295,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
             toastThis("broadcast received");
             profileId = intent.getExtras().getInt(ProfileAndAudioActivity.ID);
-            if (profileId != -1) {
                 mediaPlayer.reset();
                 initAudioPlayer();
                 buildNotification(PlaybackStatus.PLAYING);
-            }
         }
     };
 
@@ -309,7 +307,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         registerReceiver(profileReceiver, filter);
     }
 
-    private void buildNotification(PlaybackStatus playbackStatus) {
+    private void    buildNotification(PlaybackStatus playbackStatus) {
 
         play_pauseIcon = android.R.drawable.ic_media_play;//needs to be initialized
         PendingIntent play_pauseAction = null;
@@ -331,6 +329,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
         //make the intent to start the activity
         Intent intent = new Intent(this, ProfileAndAudioActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(ProfileAndAudioActivity.ID, profileId);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
@@ -339,7 +338,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         //create the pending intent
         PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(getApplicationContext(), "chinaId")
+        NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(getApplicationContext(), "baotangthaucam")
                 .setShowWhen(false)
                 //this is the start activity stuff
                 .setContentIntent(pendingIntent)

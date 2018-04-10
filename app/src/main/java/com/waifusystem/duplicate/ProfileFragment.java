@@ -34,7 +34,6 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
         configProfileStuff();
     }
 

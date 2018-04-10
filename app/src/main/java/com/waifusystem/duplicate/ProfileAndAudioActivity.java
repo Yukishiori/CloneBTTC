@@ -18,12 +18,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ProfileAndAudioActivity extends AppCompatActivity {
 
     ConstraintLayout thisConstraintLayout;
-    AudioControllerFragment audioControllerFragment = new AudioControllerFragment();
-    ProfileFragment profileFragment = new ProfileFragment();
+    AudioControllerFragment audioControllerFragment;
+    ProfileFragment profileFragment;
 
     public static String ID = "id";
     ImageButton leftButton;
@@ -45,6 +46,7 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
             MediaPlayerService.LocalBinder binder = (MediaPlayerService.LocalBinder) iBinder;
             mediaPlayerService = binder.getAudioService();
             serviceBound = true;
+            Toast.makeText(ProfileAndAudioActivity.this, "i'm bacc", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -59,7 +61,10 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_and_audio);
-
+        if (savedInstanceState == null) {
+            this.audioControllerFragment = new AudioControllerFragment();
+            this.profileFragment = new ProfileFragment();
+        }
         thisConstraintLayout = findViewById(R.id.profile_holder);
 
         int profileId = getIntent().getExtras().getInt(ID);
@@ -108,7 +113,6 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
     private void playAudio(int personId) {
 
             if (!serviceBound) {
-
                 playerIntent = new Intent(this, MediaPlayerService.class);
                 playerIntent.putExtra(ID, personId);
                 bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
@@ -118,7 +122,6 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
                 broadcastIntent.putExtra(ID, personId);
                 sendBroadcast(broadcastIntent);
             }
-
     }
 
     @Override
@@ -139,4 +142,9 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
