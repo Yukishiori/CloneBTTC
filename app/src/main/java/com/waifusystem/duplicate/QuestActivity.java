@@ -1,44 +1,46 @@
 package com.waifusystem.duplicate;
 
-import android.app.TaskStackBuilder;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-public class QuestActivity extends AppCompatActivity {
+public class QuestActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     Button nextPersonButton;
-    TextView orText;
+    Button scanButton;
+    ImageButton drawerButton;
+
+
 
     DatabaseHelper databaseHelper;
     SQLiteDatabase db;
 
     Cursor cursor;
 
-    ImageView imageView;
+    private Fragment fragment;
+
     String TAG = "setupSQL";
     private int id;
-
-    ImageAndDescriptionFragment imageAndDescriptionFragment = new ImageAndDescriptionFragment();
 
 
     @Override
@@ -46,13 +48,33 @@ public class QuestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quest);
 
+        final DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+
+
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(0).setChecked(true);
+
         nextPersonButton = findViewById(R.id.next_character);
-        orText = findViewById(R.id.or);
-
-        imageView = findViewById(R.id.quest_image);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
+        scanButton = findViewById(R.id.scan_button);
+        drawerButton = findViewById(R.id.btn_drawer);
+        drawerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
     }
+
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+    }
+
 
     private void setupSQL() {
         try {
@@ -66,53 +88,69 @@ public class QuestActivity extends AppCompatActivity {
             if (cursor.getCount() != 0) {
                 if (cursor.moveToFirst()) {
                     this.id = cursor.getInt(0) - 1;
+                    ImageAndDescriptionFragment imageAndDescriptionFragment = new ImageAndDescriptionFragment();
+                    imageAndDescriptionFragment.setId(this.id);
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.fragment_container, imageAndDescriptionFragment);
+                    fragmentTransaction.addToBackStack(null);
+//                    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                    fragmentTransaction.commit();
 
                     if (cursor.getInt(2) == 1) {
-                        setupHiddenButton();
+                        setupHiddenButtonAndToProfileScanButton();
+                    } else {
+                        setupScanButton();
                     }
-
-
                 }
             } else {
                 Toast.makeText(getApplicationContext(), "it's over anakin", Toast.LENGTH_SHORT).show();
+                setupScanButton();
             }
 
         } catch (SQLException e) {
             Toast.makeText(getApplicationContext(), "Uhhh something's wrong", Toast.LENGTH_SHORT).show();
         }
+        scanButton.setVisibility(View.VISIBLE);
     }
 
-    private void setupHiddenButton() {
+    private void setupHiddenButtonAndToProfileScanButton() {
         nextPersonButton.setVisibility(View.VISIBLE);
         nextPersonButton.setActivated(true);
+        scanButton.setText("View Profile");
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(QuestActivity.this, ProfileAndAudioActivity.class);
+                intent1.putExtra(ProfileAndAudioActivity.ID, id);
+                startActivity(intent1);
+            }
+        });
         nextPersonButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("CHECKED", 1);
                 db.update("PERSON", contentValues, "_id = ?", new String[]{Integer.toString(id + 1)});
-                Intent intent = new Intent(QuestActivity.this, QuestActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
+                setupSQL();
+                nextPersonButton.setVisibility(View.GONE);
             }
         });
-        orText.setVisibility(View.VISIBLE);
+    }
+
+    private void setupScanButton() {
+        scanButton.setText("SCAN RIGHT MEOW~");
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                init();
+            }
+        });
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         setupSQL();
-
-        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in_anim);
-
-        imageView.setImageResource(Profile.profiles[id].getItemImagePath());
-        imageView.startAnimation(animation);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
     }
 
     private void init() {
@@ -120,13 +158,14 @@ public class QuestActivity extends AppCompatActivity {
         intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
         intentIntegrator.setPrompt("Scanning QR code");
         intentIntegrator.setCameraId(0);
-        intentIntegrator.setOrientationLocked(true);
+        intentIntegrator.setOrientationLocked(false);
         intentIntegrator.setBeepEnabled(true);
         intentIntegrator.initiateScan();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+
         //result.getContent == null when user don't allow camera
         if (result.getContents() != null) {
             if (Integer.parseInt(result.getContents()) == id) {
@@ -140,33 +179,77 @@ public class QuestActivity extends AppCompatActivity {
                 Intent intent1 = new Intent(this, ProfileAndAudioActivity.class);
                 intent1.putExtra(ProfileAndAudioActivity.ID, Integer.parseInt(content));
                 startActivity(intent1);
+                finish();
             } else {
-                Snackbar.make(findViewById(R.id.quest_layout), R.string.scan_failed, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.drawer_layout), R.string.scan_failed, Snackbar.LENGTH_SHORT).show();
+
             }
+
         } else {
-            Toast.makeText(getApplicationContext(), "please allow us to use camera", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "please allow us to use your camera", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void onClick(View view) {
-        init();
-    }
-
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         db.close();
         cursor.close();
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        Intent intent = new Intent(Intent.ACTION_MAIN);
-//        intent.addCategory(Intent.CATEGORY_HOME);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivity(intent);
-//        finish();
-//        System.exit(0);
-//    }
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        FrameLayout frameLayout = findViewById(R.id.parent_container);
+        InfoFragment infoFragment = new InfoFragment();
+        switch (itemId) {
+            case R.id.nav_scan:
+                setupSQL();
+                frameLayout.setBackgroundResource(android.R.color.transparent);
+                Fragment fragment = new QuestFragment();
+                fragmentTransaction.replace(R.id.parent_container, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                break;
+            case R.id.nav_banToChuc:
+                hideTheMemes();
+                frameLayout.setBackgroundResource(R.mipmap.background_test);
+                setupInfoFragmentTransaction(fragmentTransaction, 0, infoFragment);
+                break;
+            case R.id.nav_moHinh:
+                hideTheMemes();
+                frameLayout.setBackgroundResource(R.mipmap.background_test);
+                setupInfoFragmentTransaction(fragmentTransaction, 1, infoFragment);
+                break;
+            case R.id.nav_noiDung:
+                hideTheMemes();
+                frameLayout.setBackgroundResource(R.mipmap.background_test);
+                setupInfoFragmentTransaction(fragmentTransaction, 2, infoFragment);
+                break;
+            case R.id.nav_thongTinLienHe:
+                hideTheMemes();
+                frameLayout.setBackgroundResource(R.mipmap.background_test);
+                setupInfoFragmentTransaction(fragmentTransaction, 3, infoFragment);
+                break;
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    public void hideTheMemes() {
+        FrameLayout frameLayout = findViewById(R.id.parent_container);
+        frameLayout.setBackgroundResource(R.color.white);
+        nextPersonButton.setVisibility(View.GONE);
+        scanButton.setVisibility(View.GONE);
+    }
+
+    private void setupInfoFragmentTransaction(FragmentTransaction fragmentTransaction, int id, InfoFragment infoFragment) {
+        infoFragment.setId(id);
+        fragmentTransaction.replace(R.id.parent_container, infoFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 }

@@ -34,8 +34,9 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
 
     private SeekBar seekBar;
     private TextView timeMax;
-    int mins;
-    int secs;
+    private TextView timeNow;
+
+
 
 
     public AudioControllerFragment() {
@@ -49,7 +50,10 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_controller, container, false);
 
+
+
         timeMax = view.findViewById(R.id.time_max);
+        timeNow = view.findViewById(R.id.time_now);
 
         playButton = view.findViewById(R.id.play);
         ImageButton rewindButton = view.findViewById(R.id.rewind);
@@ -94,15 +98,14 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
             public void run() {
                 if (MediaPlayerService.mediaPlayer != null) {
                     seekBar.setProgress(MediaPlayerService.mediaPlayer.getCurrentPosition());
-                    playButton.setImageResource(MediaPlayerService.play_pauseIcon);
-                    setupStuff();
+                        setupStuff();
                     if (MediaPlayerService.mediaPlayer.isPlaying()) {
                         playButton.setImageResource(R.drawable.ic_pause_white_48px);
                     } else {
                         playButton.setImageResource(R.drawable.ic_play_arrow_white_48px);
                     }
                 }
-                handler.postDelayed(this, 10);
+                handler.postDelayed(this, 100);
             }
         });
     }
@@ -115,7 +118,6 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
     }
 
 
-    @SuppressLint("DefaultLocale")
     @Override
     public void onClick(View view) {
         if (MediaPlayerService.mediaPlayer != null) {
@@ -140,11 +142,15 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private void setupStuff() {
         seekBar.setMax(MediaPlayerService.mediaPlayer.getDuration());
-        secs = (MediaPlayerService.mediaPlayer.getDuration() / 1000) % 60;
-        mins = MediaPlayerService.mediaPlayer.getDuration() / 1000 / 60;
+        int secs = (MediaPlayerService.mediaPlayer.getDuration() / 1000) % 60;
+        int mins = MediaPlayerService.mediaPlayer.getDuration() / 1000 / 60;
         timeMax.setText(String.format(("%1$02d : %2$02d"), mins, secs));
+
+        timeNow.setText(String.format(("%1$02d : %2$02d"), ((MediaPlayerService.mediaPlayer.getCurrentPosition()) / 1000 / 60 ),
+                ((MediaPlayerService.mediaPlayer.getCurrentPosition() / 1000) % 60)));
     }
 
     private void toggleButton() {

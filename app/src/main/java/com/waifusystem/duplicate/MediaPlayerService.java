@@ -307,7 +307,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         registerReceiver(profileReceiver, filter);
     }
 
-    private void    buildNotification(PlaybackStatus playbackStatus) {
+    private void buildNotification(PlaybackStatus playbackStatus) {
 
         play_pauseIcon = android.R.drawable.ic_media_play;//needs to be initialized
         PendingIntent play_pauseAction = null;
@@ -332,16 +332,16 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(ProfileAndAudioActivity.ID, profileId);
 
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
-        taskStackBuilder.addParentStack(QuestActivity.class);
-        taskStackBuilder.addNextIntent(intent);
+//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+//        taskStackBuilder.addParentStack(QuestActivity.class);
+//        taskStackBuilder.addNextIntent(intent);
         //create the pending intent
-        PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+//        PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(getApplicationContext(), "baotangthaucam")
                 .setShowWhen(false)
                 //this is the start activity stuff
-                .setContentIntent(pendingIntent)
+//                .setContentIntent(pendingIntent)
                 .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(1, 2))
                 .setColor(getResources().getColor(R.color.colorPrimaryDark))

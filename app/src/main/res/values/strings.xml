@@ -15,4 +15,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="museum_info">Dự án Bảo tàng Thấu Cảm - Empathy Museum (EM) được thành lập và điều hành do một nhóm các bạn trẻ thành năng động, có nền tảng vững chắc trong lĩnh vực tổ chức các sự kiện vì cộng đồng. Bên cạnh đó, Dự án này còn nhận được sự cố vấn về chuyên môn trực tiếp của TS. Đặng Hoàng Giang (Phó Giám Đốc Trung Tâm Nghiên cứu phát triền và hỗ trợ cộng đồng - CE-CODES)</string>
+
 </resources>

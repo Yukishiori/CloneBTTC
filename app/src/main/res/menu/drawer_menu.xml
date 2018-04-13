@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_scan"
+            android:icon="@android:drawable/ic_menu_camera"
+            android:title="Quét" />
+        <item
+            android:id="@+id/nav_banToChuc"
+            android:icon="@android:drawable/ic_menu_gallery"
+            android:title="Ban tổ chức" />
+        <item
+            android:id="@+id/nav_moHinh"
+            android:icon="@android:drawable/ic_menu_camera"
+            android:title="Mô hình" />
+
+        <item
+            android:id="@+id/nav_noiDung"
+            android:icon="@android:drawable/ic_menu_camera"
+            android:title="Nội dung" />
+        <item
+            android:id="@+id/nav_thongTinLienHe"
+            android:icon="@android:drawable/ic_menu_camera"
+            android:title="Thông tin liên hệ" />
+
+    </group>
+</menu>
