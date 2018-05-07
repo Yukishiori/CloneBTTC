@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.waifusystem.duplicate">
 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,25 +13,36 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".QuestActivity"
-            android:configChanges="orientation|keyboardHidden">
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ProfileAndAudioActivity"
             android:label="Profile"
             android:parentActivityName=".QuestActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait" />
 
         <service android:name=".MediaPlayerService" />
 
-        <activity android:name=".SplashScreenActivity"
-            android:theme="@style/SplashscreenTheme">
+        <activity
+            android:name=".SplashScreenActivity"
+            android:theme="@style/SplashscreenTheme"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".GuideActivity"
+            android:screenOrientation="portrait"/>
+
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".ThankActivity"
+            android:screenOrientation="portrait">
+
         </activity>
     </application>
 

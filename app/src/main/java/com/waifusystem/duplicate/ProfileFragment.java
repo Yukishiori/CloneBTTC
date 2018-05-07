@@ -44,8 +44,6 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         personName.setText(profile.getName());
         TextView description = view.findViewById(R.id.description);
         description.setText(profile.getDescription());
-        TextView tag = view.findViewById(R.id.tag);
-        tag.setText(profile.getTag());
     }
 
     public void setProfile(int id) {

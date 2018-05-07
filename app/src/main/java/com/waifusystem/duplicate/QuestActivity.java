@@ -24,13 +24,13 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.text.ParseException;
+
 public class QuestActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     Button nextPersonButton;
     Button scanButton;
     ImageButton drawerButton;
-
-
 
     DatabaseHelper databaseHelper;
     SQLiteDatabase db;
@@ -39,7 +39,7 @@ public class QuestActivity extends AppCompatActivity implements NavigationView.O
 
     private Fragment fragment;
 
-    String TAG = "setupSQL";
+    String TAG = "refreshPageAndSetupSQL";
     private int id;
 
 
@@ -49,7 +49,6 @@ public class QuestActivity extends AppCompatActivity implements NavigationView.O
         setContentView(R.layout.activity_quest);
 
         final DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-
 
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -76,7 +75,7 @@ public class QuestActivity extends AppCompatActivity implements NavigationView.O
     }
 
 
-    private void setupSQL() {
+    private void refreshPageAndSetupSQL() {
         try {
             databaseHelper = new DatabaseHelper(this);
             db = databaseHelper.getReadableDatabase();
@@ -95,7 +94,6 @@ public class QuestActivity extends AppCompatActivity implements NavigationView.O
                     fragmentTransaction.addToBackStack(null);
 //                    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                     fragmentTransaction.commit();
-
                     if (cursor.getInt(2) == 1) {
                         setupHiddenButtonAndToProfileScanButton();
                     } else {
@@ -103,12 +101,15 @@ public class QuestActivity extends AppCompatActivity implements NavigationView.O
                     }
                 }
             } else {
-                Toast.makeText(getApplicationContext(), "it's over anakin", Toast.LENGTH_SHORT).show();
-                setupScanButton();
+                Intent intent = new Intent(QuestActivity.this, ThankActivity.class);
+                startActivity(intent);
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("CHECKED", 0);
+                db.update("PERSON", contentValues, "_id = ?", new String[]{Integer.toString(1)});
+                refreshPageAndSetupSQL();
             }
-
         } catch (SQLException e) {
-            Toast.makeText(getApplicationContext(), "Uhhh something's wrong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "something's wrong", Toast.LENGTH_SHORT).show();
         }
         scanButton.setVisibility(View.VISIBLE);
     }
@@ -116,7 +117,7 @@ public class QuestActivity extends AppCompatActivity implements NavigationView.O
     private void setupHiddenButtonAndToProfileScanButton() {
         nextPersonButton.setVisibility(View.VISIBLE);
         nextPersonButton.setActivated(true);
-        scanButton.setText("View Profile");
+        scanButton.setText("Xem hồ sơ");
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,26 +132,39 @@ public class QuestActivity extends AppCompatActivity implements NavigationView.O
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("CHECKED", 1);
                 db.update("PERSON", contentValues, "_id = ?", new String[]{Integer.toString(id + 1)});
-                setupSQL();
+                refreshPageAndSetupSQL();
                 nextPersonButton.setVisibility(View.GONE);
             }
         });
     }
 
     private void setupScanButton() {
-        scanButton.setText("SCAN RIGHT MEOW~");
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                init();
-            }
-        });
+        if (this.id == 0) {
+            scanButton.setText("Bắt đầu");
+            scanButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ContentValues personValue = new ContentValues();
+                    personValue.put("CHECKED", 1);
+                    db.update("PERSON", personValue, "_id = ?", new String[]{Integer.toString(id + 1)});
+                    refreshPageAndSetupSQL();
+                }
+            });
+        } else {
+            scanButton.setText("Quét mã QR");
+            scanButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    init();
+                }
+            });
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        setupSQL();
+        refreshPageAndSetupSQL();
     }
 
     private void init() {
@@ -174,19 +188,17 @@ public class QuestActivity extends AppCompatActivity implements NavigationView.O
                 personValue.put("NOWCHECKING", 1);
                 db.update("PERSON", personValue, "_id = ?", new String[]{Integer.toString(id + 1)});
 
-                //todo send the id
                 String content = result.getContents();
                 Intent intent1 = new Intent(this, ProfileAndAudioActivity.class);
-                intent1.putExtra(ProfileAndAudioActivity.ID, Integer.parseInt(content));
-                startActivity(intent1);
-                finish();
+                try {
+                    intent1.putExtra(ProfileAndAudioActivity.ID, Integer.parseInt(content));
+                    startActivity(intent1);
+                } catch (NumberFormatException e) {
+                    Snackbar.make(findViewById(R.id.drawer_layout), R.string.scan_failed, Snackbar.LENGTH_SHORT).show();
+                }
             } else {
                 Snackbar.make(findViewById(R.id.drawer_layout), R.string.scan_failed, Snackbar.LENGTH_SHORT).show();
-
             }
-
-        } else {
-//            Toast.makeText(this, "please allow us to use your camera", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -205,7 +217,7 @@ public class QuestActivity extends AppCompatActivity implements NavigationView.O
         InfoFragment infoFragment = new InfoFragment();
         switch (itemId) {
             case R.id.nav_scan:
-                setupSQL();
+                refreshPageAndSetupSQL();
                 frameLayout.setBackgroundResource(android.R.color.transparent);
                 Fragment fragment = new QuestFragment();
                 fragmentTransaction.replace(R.id.parent_container, fragment);
@@ -214,23 +226,28 @@ public class QuestActivity extends AppCompatActivity implements NavigationView.O
                 break;
             case R.id.nav_banToChuc:
                 hideTheMemes();
-                frameLayout.setBackgroundResource(R.mipmap.background_test);
+                frameLayout.setBackgroundResource(R.drawable.main_background);
                 setupInfoFragmentTransaction(fragmentTransaction, 0, infoFragment);
                 break;
             case R.id.nav_moHinh:
                 hideTheMemes();
-                frameLayout.setBackgroundResource(R.mipmap.background_test);
+                frameLayout.setBackgroundResource(R.drawable.main_background);
                 setupInfoFragmentTransaction(fragmentTransaction, 1, infoFragment);
                 break;
             case R.id.nav_noiDung:
                 hideTheMemes();
-                frameLayout.setBackgroundResource(R.mipmap.background_test);
+                frameLayout.setBackgroundResource(R.drawable.main_background);
                 setupInfoFragmentTransaction(fragmentTransaction, 2, infoFragment);
                 break;
             case R.id.nav_thongTinLienHe:
                 hideTheMemes();
-                frameLayout.setBackgroundResource(R.mipmap.background_test);
+                frameLayout.setBackgroundResource(R.drawable.main_background);
                 setupInfoFragmentTransaction(fragmentTransaction, 3, infoFragment);
+                break;
+            case  R.id.nav_nhaTaiTro:
+                hideTheMemes();
+                frameLayout.setBackgroundResource(R.drawable.main_background);
+                setupInfoFragmentTransaction(fragmentTransaction, 4, infoFragment);
                 break;
         }
 

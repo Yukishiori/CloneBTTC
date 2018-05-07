@@ -41,7 +41,7 @@ public class ImageAndDescriptionFragment extends Fragment {
 
         Profile profile = Profile.profiles[id];
         profileImage.setImageResource(profile.getItemImagePath());
-        description.setText(profile.getDescription());
+        description.setText(profile.getItemDescription());
 
         profileImage.setAnimation(animation);
         description.setAnimation(animation);

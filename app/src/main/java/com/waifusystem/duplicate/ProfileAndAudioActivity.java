@@ -4,20 +4,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class ProfileAndAudioActivity extends AppCompatActivity {
@@ -29,7 +24,7 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
     public static String ID = "id";
     ImageButton leftButton;
     ImageButton rightButton;
-    SlideAdapter slideAdapter;
+    FragmentSlideAdapter fragmentSlideAdapter;
 
     ViewPager viewPager;
 
@@ -46,12 +41,12 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
             MediaPlayerService.LocalBinder binder = (MediaPlayerService.LocalBinder) iBinder;
             mediaPlayerService = binder.getAudioService();
             serviceBound = true;
-            Toast.makeText(ProfileAndAudioActivity.this, "i'm bacc", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             serviceBound = false;
+            mediaPlayerService.stopMedia();
         }
     };
 
@@ -68,19 +63,15 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
         thisConstraintLayout = findViewById(R.id.profile_holder);
 
         int profileId = getIntent().getExtras().getInt(ID);
-        Log.d("china", "onCreate: "+ profileId);
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 4;
-        Bitmap backgroundImage = BitmapFactory.decodeResource(getResources(), Profile.profiles[profileId].getProfileImagePath(), options);
         ImageView imageView = findViewById(R.id.profile_image);
-        imageView.setImageBitmap(backgroundImage);
-
+        imageView.setImageResource(Profile.profiles[profileId].getProfileImagePath());
+//
         profileFragment.setProfile(profileId);
 
-        slideAdapter = new SlideAdapter(getSupportFragmentManager(), profileFragment, audioControllerFragment);
+        fragmentSlideAdapter = new FragmentSlideAdapter(getSupportFragmentManager(), profileFragment, audioControllerFragment);
         viewPager = findViewById(R.id.fragment_container);
-        viewPager.setAdapter(slideAdapter);
+        viewPager.setAdapter(fragmentSlideAdapter);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -104,6 +95,7 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
 
             }
         });
+
         leftButton = findViewById(R.id.left_button);
         rightButton = findViewById(R.id.right_button);
         playAudio(profileId);
@@ -117,10 +109,6 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
                 playerIntent.putExtra(ID, personId);
                 bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
                 startService(playerIntent);
-            } else {
-                Intent broadcastIntent = new Intent(Broadcast_NEW_PROFILE);
-                broadcastIntent.putExtra(ID, personId);
-                sendBroadcast(broadcastIntent);
             }
     }
 
@@ -132,6 +120,7 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
         }
     }
 
+
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.left_button:
@@ -142,9 +131,12 @@ public class ProfileAndAudioActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
+        mediaPlayerService.stopMedia();
+        MediaPlayerService.mediaPlayer = null;
+        MediaPlayerService.resumePosition = 0;
     }
 }

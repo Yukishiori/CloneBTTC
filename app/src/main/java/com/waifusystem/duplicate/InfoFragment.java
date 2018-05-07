@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Random;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,7 +56,34 @@ public class InfoFragment extends Fragment {
                     "N g u y ễ n L ê H à L i n h ( M s . )\n" +
                     "Trưởng Ban Đối ngoại Dự án Bảo tàng Thấu Cảm Email: nguyenlehalinh1120@gmail.com\n" +
                     "M a r i l y n P h a m D a c u s i n ( M s . )\n" +
-                    "Trưởng Ban Tổ chức Dự án Bảo tàng Thấu cảm Email: marilynphamdacusin@gmail.com"
+                    "Trưởng Ban Tổ chức Dự án Bảo tàng Thấu cảm Email: marilynphamdacusin@gmail.com",
+
+            //sponsor
+            "1. Giới thiệu về đơn vị Qùa tặng điện tử Urbox\n" +
+                    "Hãy đón nhận mọi điều trong tâm thế của một trái tim rộng lớn!\n" +
+                    "Bước đầu tiên để “hiểu” người đối diện là lắng nghe, là quan tâm, là yêu thương từ những điều nhỏ bé nhất. Những điều nhỏ nhắn, đẹp đẽ trong thế giới này đều mang lại ý nghĩa quan trọng. Trong tình yêu, những món quà đắt tiền từ người thương cũng không bằng câu nói: \"Anh đây!\" mỗi khi cô nhõng nhẽo, những lúc mệt mỏi có anh là nhà. Nhiều tiền gửi cho bố mẹ không bằng lời hỏi thăm, bữa cơm cùng ăn với gia đình... Mỗi chúng ta đều là những hạt nhân lan truyền hạnh phúc, lan truyền sự tử tế, lan truyền sự quan tâm.\n" +
+                    " \n" +
+                    "Urbox thật hạnh phúc khi mang trong mình sứ mệnh kết nối mọi người với nhau. Bằng những món quà nhỏ nhắn hằng ngày, thiệp điện tử thông minh, chỉ cần một vài nút ấn là có thể gửi quà, gửi cả sự yêu thương mà từ bấy lâu chúng ta bỏ quên mất giữa bộn bề cuộc sống. Một món quà kèm lời cảm ơn, một món quà cùng lời xin lỗi, một món quà có lời yêu là những điều bé nhỏ mà chúng ta có thể làm mỗi ngày cùng Urbox.vn.\n" +
+                    "\n" +
+                    "2. Giới thiệu Grab Promotion\n" +
+                    "Tháng 4 đong đầy yêu thương, Urbox cùng Grab mang đến món quà đặc biệt cho các Urbox-ers, từ ngày 10/04 - 10/05/2018 chỉ cần gửi một món quà thành công trên Urbox, bạn nhận được mã Code Grab trị giá 30.000đ.\n" +
+                    "Hãy để Urbox đồng hành cùng bạn trong việc trao yêu thương từ những món quà nhỏ bé đến những người xung quanh.\n" +
+                    "\n" +
+                    "3. Giới thiệu về Urbox trên app\n" +
+                    "Urbox.vn là giải pháp quà tặng điện tử thông minh và tiện lợi dành cho khách hàng cá nhân và doanh nghiệp. Với mong muốn xây dựng một phong cách tặng quà độc đáo Urbox.vn hy vọng có thể biến việc tặng quà trở thành một thói \n" +
+                    "quen, giúp việc giao tiếp trở nên dễ dàng hơn.\n\n" +
+                    "4. Giới thiệu về Urbox trên website\n" +
+                    "Urbox – là hệ thống tặng quà điện tử hiện đại và thông minh, cho phép bạn tặng quà và gửi lời chúc hàng ngày dễ dàng thông qua chỉ vài cú nhấp chuột.\n" +
+                    "Bạn chỉ cần đến DUY NHẤT cửa hàng là Urbox.vn để có thể chọn lựa rất nhiều món quà, phù hợp cho mọi đối tượng và mọi độ tuổi, với mức giá vô cùng HỢP LÝ, \n" +
+                    "Quà tặng bạn chọn sẽ được gửi đi TỰ ĐỘNG và NGAY LẬP TỨC. \n" +
+                    "Món quà đến tay người nhận sẽ được gói gọn trong MỘT MÃ CODE gửi qua email và tin nhắn SMS, vì vậy món quà sẽ luôn nằm trong điện thoại 24/24  \n" +
+                    "Với Urbox, bạn sẽ không còn lo lắng về khoảng cách địa lý\n" +
+                    " SỬ DỤNG URBOX THẾ NÀO?\t\n\n" +
+                    "B1: Truy cập http://urbox.vn/ và đăng nhập bằng tài khoản Facebook/Gmail\n" +
+                    "B2: Chọn món quà bạn muốn gửi tặng\n" +
+                    "B3: Nhập thông tin người nhận, chọn thiệp và để lại lời nhắn\n" +
+                    "B4: Ấn nút Tặng ngay và thanh toán online với cổng thanh toán điện tử\n" +
+                    "\n"
     };
 
     private String[] topTexts = new String[] {
@@ -62,11 +91,20 @@ public class InfoFragment extends Fragment {
             "Ban tổ chức",
             "Mô hình",
             "Nội dung",
-            "Thông tin liên hệ"
+            "Thông tin liên hệ",
+            "Nhà tài trợ"
     };
 
     private int[] randomImagesPath = new int[] {
-
+            R.drawable.hung_item,
+            R.drawable.question_mark,
+            R.drawable.best_moment_item,
+            R.drawable.dai_item,
+            R.drawable.gau_meo_item,
+            R.drawable.vong_item,
+            R.drawable.eric_item,
+            R.drawable.giang_hid_item,
+            R.drawable.hue_item
     };
 
     public InfoFragment() {
@@ -78,13 +116,18 @@ public class InfoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_info, container, false);
+        Random random = new Random();
+
         randomImage = view.findViewById(R.id.random_image);
         infoDescription = view.findViewById(R.id.info_description);
         topText = view.findViewById(R.id.top_text);
-
+        if (id < 4) {
+            randomImage.setImageResource(randomImagesPath[random.nextInt(randomImagesPath.length)]);
+        } else {
+            randomImage.setImageResource(R.drawable.sponsor_logo);
+        }
         infoDescription.setText(description[id]);
         topText.setText(topTexts[id]);
-
         return view;
     }
 

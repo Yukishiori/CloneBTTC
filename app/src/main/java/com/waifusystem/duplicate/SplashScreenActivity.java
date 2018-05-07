@@ -16,31 +16,22 @@ public class SplashScreenActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
 
 
-
-
-
-
     @SuppressLint("CommitPrefEdits")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //todo this is fine
         preferences = getSharedPreferences(PREFS_NAME, 0);
         if (preferences.contains("first")) {
-            //todo add ScanMapAct here
-            Toast.makeText(getApplicationContext(), "it's disguised toast here", Toast.LENGTH_SHORT).show();
-
+            Intent intent = new Intent(this, QuestActivity.class);
+            startActivity(intent);
         } else {
-            //todo guide
-            Toast.makeText(getApplicationContext(), "what's up guys it's moe here", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, GuideActivity.class);
             editor = getSharedPreferences(PREFS_NAME, 0).edit();
             editor.putBoolean("first", false);
-
             editor.apply();
-        }
+            startActivity(intent);
 
-        Intent intent = new Intent(this, QuestActivity.class);
-        startActivity(intent);
+        }
         finish();
     }
 

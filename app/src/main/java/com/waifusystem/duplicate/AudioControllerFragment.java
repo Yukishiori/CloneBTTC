@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -36,7 +37,19 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
     private TextView timeMax;
     private TextView timeNow;
 
+     Handler handler;
 
+     Runnable runnable = new Runnable() {
+         @Override
+         public void run() {
+             if (MediaPlayerService.mediaPlayer != null) {
+                 seekBar.setProgress(MediaPlayerService.mediaPlayer.getCurrentPosition());
+                 setupStuff();
+                 playButton.setImageResource(MediaPlayerService.play_pauseIcon);
+             }
+             handler.postDelayed(this, 10);
+         }
+     };
 
 
     public AudioControllerFragment() {
@@ -64,7 +77,6 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
 
         playButton.setOnClickListener(this);
 
-
         seekBar = view.findViewById(R.id.seek_bar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -91,32 +103,20 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
 
 
     public void updateSeekbar() {
-        final Handler handler = new Handler();
-        handler.post(new Runnable() {
-            @SuppressLint("DefaultLocale")
-            @Override
-            public void run() {
-                if (MediaPlayerService.mediaPlayer != null) {
-                    seekBar.setProgress(MediaPlayerService.mediaPlayer.getCurrentPosition());
-                        setupStuff();
-                    if (MediaPlayerService.mediaPlayer.isPlaying()) {
-                        playButton.setImageResource(R.drawable.ic_pause_white_48px);
-                    } else {
-                        playButton.setImageResource(R.drawable.ic_play_arrow_white_48px);
-                    }
-                }
-                handler.postDelayed(this, 100);
-            }
-        });
+        handler = new Handler();
+        handler.post(runnable);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        playButton.setImageResource(MediaPlayerService.play_pauseIcon);
+    }
 
     @Override
     public void onClick(View view) {
@@ -131,14 +131,13 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
                     ProfileAndAudioActivity.mediaPlayerService.rewindMedia();
                     break;
                 case R.id.fast_forward:
-
                     ProfileAndAudioActivity.mediaPlayerService.fastForwardMedia();
                     break;
                 default:
                     break;
             }
         } else {
-            toastThis("");
+            toastThis("Something's wrong");
         }
     }
 
@@ -155,27 +154,8 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
 
     private void toggleButton() {
         if (MediaPlayerService.mediaPlayer.isPlaying()) {
-            
-
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                playButton.setImageResource(R.drawable.play_to_pause);
-//                pauseToPlayAnimation = (AnimatedVectorDrawable) playButton.getDrawable();
-//                pauseToPlayAnimation.start();
-//            } else {
-                playButton.setImageResource(R.drawable.ic_play_arrow_white_48px);
-
-//            }
             ProfileAndAudioActivity.mediaPlayerService.pauseMedia();
-//                pauseClicked = true;
         } else {
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                playButton.setImageResource(R.drawable.pause_to_play);
-//                playToPauseAnimation = (AnimatedVectorDrawable) playButton.getDrawable();
-//                playToPauseAnimation.start();
-//            } else {
-                playButton.setImageResource(R.drawable.ic_pause_white_48px);
-//            }
             ProfileAndAudioActivity.mediaPlayerService.resumeMedia();
         }
     }
@@ -184,5 +164,9 @@ public class AudioControllerFragment extends android.support.v4.app.Fragment imp
         Toast.makeText(getActivity().getApplicationContext(), content, Toast.LENGTH_SHORT).show();
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(runnable);
+    }
 }

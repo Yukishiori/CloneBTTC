@@ -80,11 +80,12 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     public void stopMedia() {
         if (mediaPlayer == null) return;
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            buildNotification(PlaybackStatus.PAUSED);
-        }
+        //todo check this one more
+            if (mediaPlayer.isPlaying()) {
+                buildNotification(PlaybackStatus.PAUSED);
+                mediaPlayer.stop();
+                mediaPlayer.release();
+            }
     }
 
     public void pauseMedia() {
@@ -109,7 +110,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         try {
             profileId = intent.getExtras().getInt(ProfileAndAudioActivity.ID);
             profile = Profile.profiles[profileId];
-            Log.d("china", "onStartCommand: " + profileId);
         } catch (NullPointerException e) {
             stopSelf();
         }
@@ -129,14 +129,12 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
             }
         }
 
-
         handleIncomingActions(intent);
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        Toast.makeText(getApplicationContext(), "completed", Toast.LENGTH_SHORT).show();
         stopMedia();
         stopSelf();
     }
@@ -185,7 +183,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
             case AudioManager.AUDIOFOCUS_GAIN:
                 // resume playback
                 if (mediaPlayer == null) initAudioPlayer();
-                else if (!mediaPlayer.isPlaying()) resumeMedia();
                 mediaPlayer.setVolume(1.0f, 1.0f);
                 break;
             case AudioManager.AUDIOFOCUS_LOSS:
@@ -224,8 +221,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         super.onDestroy();
         if (mediaPlayer != null) {
             stopMedia();
-            mediaPlayer.release();
-            mediaPlayer = null;
         }
         if (phoneStateListener != null) {
             telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
@@ -244,7 +239,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         public void onReceive(Context context, Intent intent) {
             //pause audio on ACTION_AUDIO_BECOMING_NOISY
             pauseMedia();
-
         }
     };
 
@@ -292,8 +286,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     private BroadcastReceiver profileReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            toastThis("broadcast received");
             profileId = intent.getExtras().getInt(ProfileAndAudioActivity.ID);
                 mediaPlayer.reset();
                 initAudioPlayer();
@@ -327,17 +319,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         option.inSampleSize = 16;
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), profile.getProfileImagePath(), option); //replace with your own image
 
-        //make the intent to start the activity
-        Intent intent = new Intent(this, ProfileAndAudioActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.putExtra(ProfileAndAudioActivity.ID, profileId);
-
-//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
-//        taskStackBuilder.addParentStack(QuestActivity.class);
-//        taskStackBuilder.addNextIntent(intent);
-        //create the pending intent
-//        PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
         NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(getApplicationContext(), "baotangthaucam")
                 .setShowWhen(false)
                 //this is the start activity stuff
@@ -347,7 +328,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
                 .setColor(getResources().getColor(R.color.colorPrimaryDark))
                 .setLargeIcon(largeIcon)
                 .setSmallIcon(play_pauseIcon)
-                .setContentText("\'s story")
+                .setContentText("BTTC's character")
                 .setContentTitle(profile.getName())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .addAction(R.drawable.ic_skip_previous_white_36px, "rewind", playbackAction(3))
@@ -418,7 +399,4 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         }
     }
 
-    public void toastThis(String what) {
-        Toast.makeText(getApplicationContext(), what, Toast.LENGTH_SHORT).show();
-    }
 }

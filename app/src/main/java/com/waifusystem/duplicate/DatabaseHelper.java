@@ -4,16 +4,18 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.Random;
+
+import static android.content.ContentValues.TAG;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     private int[] order = new int[] {
-            0, 1
+             2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
     };
-
 
     private static final String DB_name = "BTTC";
     private static final int DB_version = 1;
@@ -31,12 +33,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + "POSITION INTEGER, "
                 + "NOWCHECKING INTEGER, "
                 + "CHECKED INTEGER);"); //1 is done 0 isn't
-        for (int i = 0; i <Profile.profiles.length; i++) {
+        for (int i = 0; i <Profile.profiles.length ; i++) {
             ContentValues personValue = new ContentValues();
-            personValue.put("POSITION", order[i]);
-            personValue.put("NOWCHECKING", 0);
-            personValue.put("CHECKED", 0);
-            sqLiteDatabase.insert("PERSON", null, personValue);
+            if (i == 0) {
+                personValue.put("POSITION", 1);
+                personValue.put("NOWCHECKING", 0);
+                personValue.put("CHECKED", 0);
+                sqLiteDatabase.insert("PERSON", null, personValue);
+            } else {
+                personValue.put("POSITION", order[i - 1]);
+                personValue.put("NOWCHECKING", 0);
+                personValue.put("CHECKED", 0);
+                sqLiteDatabase.insert("PERSON", null, personValue);
+            }
         }
     }
 
